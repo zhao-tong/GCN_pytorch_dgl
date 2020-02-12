@@ -12,7 +12,6 @@ import torch
 from collections import defaultdict
 
 CUR_DIR = os.path.dirname(os.path.abspath(__file__))
-# BASE_DIR = os.path.dirname(CUR_DIR)
 
 class DataLoader():
     def __init__(self, args):
@@ -25,6 +24,7 @@ class DataLoader():
 
     def load_data(self, dataset):
         """
+        Modified from Kipf's code: https://github.com/tkipf/gcn
         Loads input data from gcn/data directory
         ind.dataset.x => the feature vectors of the training instances as scipy.sparse.csr.csr_matrix object;
         ind.dataset.tx => the feature vectors of the test instances as scipy.sparse.csr.csr_matrix object;
@@ -38,7 +38,6 @@ class DataLoader():
         ind.dataset.test.index => the indices of test instances in graph, for the inductive setting as list object.
         All objects above must be saved using python pickle module.
         :param dataset: Dataset name
-        :return: All data input files loaded (as well the training/test data).
         """
         names = ['x', 'y', 'tx', 'ty', 'allx', 'ally', 'graph']
         objects = []
@@ -47,7 +46,6 @@ class DataLoader():
                 objects.append(pickle.load(f, encoding='latin1'))
 
         x, y, tx, ty, allx, ally, graph = tuple(objects)
-        # test_idx_reorder = parse_index_file("data/ind.{}.test.index".format(dataset))
         test_idx_reorder = []
         for line in open(f"{CUR_DIR}/data/ind.{dataset}.test.index"):
             test_idx_reorder.append(int(line.strip()))
@@ -83,11 +81,3 @@ class DataLoader():
         self.train_nid = np.arange(len(y))
         self.val_nid = np.arange(len(y), len(y)+500)
         self.test_nid = test_idx_range
-
-        # tvt_nids = [self.train_nid, self.val_nid, self.test_nid]
-        # print(len(y), len(test_idx_range))
-        # pickle.dump(self.features, open(f'{CUR_DIR}/data/citation_networks_binary/{dataset}_features.pkl', 'wb'))
-        # pickle.dump(self.adj_mat, open(f'{CUR_DIR}/data/citation_networks_binary/{dataset}_adj.pkl', 'wb'))
-        # pickle.dump(self.labels, open(f'{CUR_DIR}/data/citation_networks_binary/{dataset}_labels.pkl', 'wb'))
-        # pickle.dump(tvt_nids, open(f'{BASE_DIR}/data/citation_networks_binary/{dataset}_tvt_nids.pkl', 'wb'))
-
