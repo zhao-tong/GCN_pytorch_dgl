@@ -1,5 +1,3 @@
-import math
-import warnings
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
@@ -7,7 +5,6 @@ import dgl
 import dgl.function as fn
 from dgl import DGLGraph
 import numpy as np
-from sklearn.metrics import roc_auc_score, average_precision_score, auc, roc_curve, precision_recall_curve
 
 def train_model(args, dl, model):
     device = args.device
